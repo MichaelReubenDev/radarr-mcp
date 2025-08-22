@@ -148,6 +148,24 @@ async def handle_list_tools() -> list[Tool]:
                 },
                 "required": ["movie_id"]
             }
+        ),
+        Tool(
+            name="download_torrent",
+            description="Download a specific torrent/release",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "release_guid": {
+                        "type": "string",
+                        "description": "Release GUID from interactive_search results"
+                    },
+                    "movie_id": {
+                        "type": "integer",
+                        "description": "Radarr movie ID"
+                    }
+                },
+                "required": ["release_guid", "movie_id"]
+            }
         )
     ]
 
@@ -381,7 +399,10 @@ async def handle_call_tool(name: str, arguments: dict[str, Any] | None) -> list[
                     
                     # Torrent-specific info
                     seeders = release.get("seeders")
-                    leechers = release.get("leechers") 
+                    leechers = release.get("leechers")
+                    
+                    # Release identification
+                    guid = release.get("guid", "Unknown")
                     
                     # Quality info
                     quality = release.get("quality", {}).get("quality", {}).get("name", "Unknown")
@@ -396,6 +417,9 @@ async def handle_call_tool(name: str, arguments: dict[str, Any] | None) -> list[
                     
                     if protocol.lower() == "torrent" and (seeders is not None or leechers is not None):
                         result += f"   Seeds: {seeders or 0} | Leechers: {leechers or 0}\n"
+                    
+                    # Add GUID for download_torrent tool
+                    result += f"   Release ID: {guid}\n"
                     
                     result += "\n"
                 
@@ -475,6 +499,45 @@ async def handle_call_tool(name: str, arguments: dict[str, Any] | None) -> list[
                 
             except httpx.HTTPError as e:
                 return [TextContent(type="text", text=f"Error deleting movie: {e}")]
+        
+        elif name == "download_torrent":
+            release_guid = arguments.get("release_guid")
+            movie_id = arguments.get("movie_id")
+            
+            try:
+                # First, get the original release data by searching again
+                search_url = f"{RADARR_URL}/api/v3/release"
+                search_params = {"movieId": movie_id}
+                search_response = await client.get(search_url, headers=headers, params=search_params)
+                search_response.raise_for_status()
+                releases = search_response.json()
+                
+                # Find the specific release by GUID
+                target_release = None
+                for release in releases:
+                    if release.get("guid") == release_guid:
+                        target_release = release
+                        break
+                
+                if not target_release:
+                    return [TextContent(type="text", text=f"Release with GUID {release_guid} not found")]
+                
+                # Send the complete release data to download
+                download_url = f"{RADARR_URL}/api/v3/release"
+                response = await client.post(download_url, headers=headers, json=target_release)
+                response.raise_for_status()
+                
+                # Get movie title for response
+                movie_url = f"{RADARR_URL}/api/v3/movie/{movie_id}"
+                movie_response = await client.get(movie_url, headers=headers)
+                movie_response.raise_for_status()
+                movie_data = movie_response.json()
+                movie_title = movie_data.get("title", "Unknown")
+                
+                return [TextContent(type="text", text=f"Successfully started download for '{movie_title}' (Release ID: {release_guid})")]
+                
+            except httpx.HTTPError as e:
+                return [TextContent(type="text", text=f"Error downloading torrent: {e}")]
         
         else:
             return [TextContent(type="text", text=f"Unknown tool: {name}")]

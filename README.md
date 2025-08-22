@@ -4,14 +4,15 @@ A Model Context Protocol (MCP) server for [Radarr](https://radarr.video/), enabl
 
 ## Features
 
-- = **Search Movies** - Find movies to add to your collection
-- ? **Add Movies** - Add movies with quality profiles and search options
-- =? **List Movies** - View your entire movie library
-- <? **Movie Details** - Get detailed information including download status
-- ? **Update Movies** - Change quality profiles and trigger searches
-- =? **Delete Movies** - Remove movies (with optional file deletion)
-- = **Interactive Search** - Browse available releases with seeders/leechers info
-- =? **Quality Profiles** - View available quality settings
+- 🔍 **Search Movies** - Find movies to add to your collection
+- ➕ **Add Movies** - Add movies with quality profiles and search options
+- 📋 **List Movies** - View your entire movie library
+- 🎬 **Movie Details** - Get detailed information including download status
+- ⚙️ **Update Movies** - Change quality profiles and trigger searches
+- 🗑️ **Delete Movies** - Remove movies (with optional file deletion)
+- 🔍 **Interactive Search** - Browse available releases with seeders/leechers info
+- 📊 **Quality Profiles** - View available quality settings
+- ⬇️ **Download Torrent** - Manually download specific torrents from search results
 
 ## Installation
 
@@ -157,8 +158,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Support
 
-- = [Report Issues](https://github.com/MichaelReubenDev/radarr-mcp/issues)
-- =? [Discussions](https://github.com/MichaelReubenDev/radarr-mcp/discussions)
-- =? [Radarr API Documentation](https://radarr.video/docs/api/)
+- 🐛 [Report Issues](https://github.com/MichaelReubenDev/radarr-mcp/issues)
+- 💬 [Discussions](https://github.com/MichaelReubenDev/radarr-mcp/discussions)
+- 📖 [Radarr API Documentation](https://radarr.video/docs/api/)
 
 ---

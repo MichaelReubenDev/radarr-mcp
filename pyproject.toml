@@ -1,6 +1,6 @@
 [project]
 name = "radarr-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server for Radarr movie management"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -12,6 +12,11 @@ dependencies = [
 
 [project.scripts]
 radarr-mcp = "radarr_mcp_server:main"
+
+[dependency-groups]
+dev = [
+    "twine>=5.0.0",
+]
 
 [build-system]
 requires = ["hatchling"]
