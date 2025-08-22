@@ -1,0 +1,9 @@
+version: '3'
+
+dotenv:
+  - '.env'
+
+tasks:
+  mcp_inspector: 
+    cmd: |
+      npx @modelcontextprotocol/inspector uv run radarr-mcp --url $RADARR_URL --api-token $RADARR_API_TOKEN
